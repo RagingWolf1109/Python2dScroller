@@ -1,1 +1,20 @@
-print("Hello World")
+import pygame
+
+#creating the screen
+screen = pygame.display.set_mode((640,480))
+pygame.display.set_caption('Side Scroller')
+
+
+#Creating the Start Menu
+def menu():
+    image = pygame.image.load('assets\menu.png')
+
+
+
+
+while True:
+    pygame.display.update()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()

@@ -23,7 +23,10 @@ def game():
     bgx = 0
 
     player = pygame.image.load('assets\player.png')
-    player = pygame.transform.scale(player,(100,100))
+    player = pygame.transform.rotozoom(player,0,0.2)
+    player_y = 325
+
+
     while True:
         screen.blit(image,(bgx-640,0))
         screen.blit(image,(bgx,0))
@@ -33,7 +36,11 @@ def game():
         if bgx <= -640:
             bgx = 0
 
-        screen.blit(player,(50,325))
+        screen.blit(player,(50,player_y))
+        #if jump == 1:
+
+
+
 
         pygame.display.update()
         for event in pygame.event.get():
@@ -43,6 +50,7 @@ def game():
               exit()
            if event.type == pygame.KEYDOWN:
                 print('Jump')
+                #jump
 
 
 menu()

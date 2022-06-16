@@ -37,6 +37,7 @@ def game():
     crate_x = 760
     crate_speed = 2
 
+    score = 0
 
     while True:
         screen.blit(image,(bgx-640,0))
@@ -76,6 +77,7 @@ def game():
            if event.type == pygame.KEYDOWN:
                 print('Jump')
                 jump = 1
+                score += 1
 
 
 menu()

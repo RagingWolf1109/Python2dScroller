@@ -1,10 +1,14 @@
 import pygame
 import random
 
+#Import my projectile module 
+from projectile import Projectile
+
+pygame.init()
 
 #creating the screen
 screen = pygame.display.set_mode((640,480))
-pygame.display.set_caption('Side Scroller')
+pygame.display.set_caption('S ide Scroller')
 def menu():
     image = pygame.image.load('assets\menu.png')
     image = pygame.transform.scale(image,(640,480))    
@@ -21,6 +25,7 @@ def menu():
            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     game()
+
 def game():
     image = pygame.image.load('assets\level1.png')
     image = pygame.transform.scale(image,(640,480))    
@@ -40,6 +45,9 @@ def game():
     crate_speed = 2
 
     score = 0
+
+    #basic attacks
+    bullets = []
 
     while True:
         screen.blit(image,(bgx-640,0))
@@ -69,7 +77,6 @@ def game():
             print('Collision')
             return
 
-
         pygame.display.update()
         for event in pygame.event.get():
            if event.type == pygame.QUIT:
@@ -77,9 +84,13 @@ def game():
               pygame.display.quit()
               exit()
            if event.type == pygame.KEYDOWN:
-                print('Jump')
-                jump = 1
-                score += 1
+                if event.key == pygame.K_SPACE:
+                    print('Jump')
+                    jump = 1
+                    score += 1
+                #if event.key == pygame.K_q: #basic attack
+                    
+                                
 def main():
     menu()
 

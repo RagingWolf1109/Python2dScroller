@@ -1,3 +1,4 @@
+from subprocess import STARTF_USESHOWWINDOW
 import pygame
 import random
 
@@ -8,7 +9,11 @@ pygame.init()
 
 #creating the screen
 screen = pygame.display.set_mode((640,480))
-pygame.display.set_caption('S ide Scroller')
+pygame.display.set_caption('Side Scroller')
+
+#Game Variables
+
+
 def menu():
     image = pygame.image.load('assets\menu.png')
     image = pygame.transform.scale(image,(640,480))    
@@ -44,16 +49,21 @@ def game():
     crate_x = 760
     crate_speed = 2
 
-    score = 0
+    
 
     #basic attacks
-    bullets = []
+    basicAttack_group = pygame.sprite.Group()
+
 
     while True:
+        shoot = False
+        jumping = False
+        score = 0
+        
         screen.blit(image,(bgx-640,0))
         screen.blit(image,(bgx,0))
         screen.blit(image,(bgx+640,0))
-
+        
         bgx = bgx - 1
         if bgx <= -640:
             bgx = 0
@@ -77,6 +87,9 @@ def game():
             print('Collision')
             return
 
+        basicAttack_group.update()
+        basicAttack_group.draw(screen)
+
         pygame.display.update()
         for event in pygame.event.get():
            if event.type == pygame.QUIT:
@@ -85,12 +98,21 @@ def game():
               exit()
            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    print('Jump')
-                    jump = 1
-                    score += 1
-                #if event.key == pygame.K_q: #basic attack
-                    
-                                
+                    if jumping == False:
+                        jumping = True
+                        print('Jump')
+                        jump = 1
+                        score += 1
+                if event.key == pygame.K_q: #basic attack
+                    shoot = True
+                    if shoot == True:
+                      bullet = Projectile(50,player_y,0)
+                      basicAttack_group.add(bullet)
+           if event.type == pygame.KEYUP:
+                if event.key == pygame.K_q:
+                    shoot = False
+                if event.key == pygame.K_SPACE:
+                    jumping = False       
 def main():
     menu()
 

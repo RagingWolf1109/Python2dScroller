@@ -11,11 +11,11 @@ class Projectile(pygame.sprite.Sprite):
     def update(self):
         if self.direction == 'right':
             self.rect.x += (self.direction * self.speed)
-        
+        if not pygame.display.get_surface().get_rect().contains(self.rect):
+            self.kill()
 
     #def update(self,events,dt):
-        #if not pygame.display.get_surface().get_rect().contains(self.rect):
-           # self.kill()
+        
         
 
 

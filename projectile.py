@@ -9,8 +9,7 @@ class Projectile(pygame.sprite.Sprite):
         self.rect.center = (x,y)
         self.direction = direction
     def update(self):
-        if self.direction == 'right':
-            self.rect.x += (self.direction * self.speed)
+        self.rect.x += (self.direction * self.speed)
         if not pygame.display.get_surface().get_rect().contains(self.rect):
             self.kill()
 

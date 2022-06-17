@@ -49,12 +49,9 @@ def game():
 
     #basic attacks
     basicAttack_group = pygame.sprite.Group()
+    shoot = False
 
     while True:
-        shoot = False
-        jumping = False
-        score = 0
-
         screen.blit(image,(bgx-640,0))
         screen.blit(image,(bgx,0))
         screen.blit(image,(bgx+640,0))
@@ -66,10 +63,11 @@ def game():
         p_rect = screen.blit(player,(50,player_y))
         if player_y < 325:
             player_y = player_y + gravity
+            #go back to the og tutorial and recheck this 
         if jump == 1:
             player_y = player_y - 4
             jumpcount += 1
-            if jumpcount >40:
+            if jumpcount > 40:
                 jump = 0
                 jumpcount = 0    
         c_rect = screen.blit(crate,(crate_x,360))
@@ -82,6 +80,8 @@ def game():
             print('Collision')
             return
 
+        jumping = False
+
         basicAttack_group.update()
         basicAttack_group.draw(screen)
 
@@ -92,12 +92,12 @@ def game():
               pygame.display.quit()
               exit()
            if event.type == pygame.KEYDOWN:
+                #to fix jumping i will need to add a box and do a collision check
                 if event.key == pygame.K_SPACE:
-                    if jumping == False:
+                     if jumping == False:
                         jumping = True
                         print('Jump')
                         jump = 1
-                        score += 1
                 if event.key == pygame.K_q: #basic attack
                     shoot = True
                     if shoot == True:

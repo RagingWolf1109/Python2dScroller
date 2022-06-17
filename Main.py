@@ -11,8 +11,6 @@ pygame.init()
 screen = pygame.display.set_mode((640,480))
 pygame.display.set_caption('Side Scroller')
 
-#Game Variables
-
 
 def menu():
     image = pygame.image.load('assets\menu.png')
@@ -49,17 +47,14 @@ def game():
     crate_x = 760
     crate_speed = 2
 
-    
-
     #basic attacks
     basicAttack_group = pygame.sprite.Group()
-
 
     while True:
         shoot = False
         jumping = False
         score = 0
-        
+
         screen.blit(image,(bgx-640,0))
         screen.blit(image,(bgx,0))
         screen.blit(image,(bgx+640,0))

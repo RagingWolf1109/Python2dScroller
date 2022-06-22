@@ -1,114 +1,117 @@
-from subprocess import STARTF_USESHOWWINDOW
-import pygame
-import random
+#making a 2d scroller game 
 
-#Import my projectile module 
-from projectile import Projectile
+#imports
+import random
+import pygame
 
 pygame.init()
 
-#creating the screen
-screen = pygame.display.set_mode((640,480))
-pygame.display.set_caption('Side Scroller')
+#game constants
+
+white = (255, 255, 255)
+black = (0, 0, 0)
+green = (0, 255, 0)
+red = (255, 0, 0)
+orange = (255,165,0)
+yellow = (255,255,0)
+
+WIDTH = 450
+HEIGHT = 300
+
+#game variables
+
+score = 0
+player_x = 50
+player_y = 200
+y_change = 0
+x_change = 0
+gravity = 1
+obstacles = [300,450,600]
+obstacle_speed = 2
+active = False
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("2D Scrolling Game")
+clock = pygame.time.Clock()
+background = black
+fps = 60
+font = pygame.font.SysFont(None, 25)
+timer = clock
 
 
-def menu():
-    image = pygame.image.load('assets\menu.png')
-    image = pygame.transform.scale(image,(640,480))    
-    while True:
-        screen.blit(image,(0,0))
-        pygame.draw.rect(screen,(255,255,255),(250,200,100,50)) #make this an image eventually (x,y,width,height)
-        #press enter to start
-        pygame.display.update()
-        for event in pygame.event.get():
-           if event.type == pygame.QUIT:
-              print('Quitting')
-              pygame.display.quit()
-              exit()
-           if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    game()
 
-def game():
-    image = pygame.image.load('assets\level1.png')
-    image = pygame.transform.scale(image,(640,480))    
-    bgx = 0
+running = True
+while running:
+    timer.tick(fps)
+    screen.fill(background)
+    if not active:
+        instruction_text = font.render(f'Space Bar to Start',True,white,black)
+        screen.blit(instruction_text,(140,50))
+        instruction_text2 = font.render(f'Space Bar to Jump. Left/Right to move',True,white,black)
+        screen.blit(instruction_text2,(90,90))
 
-    player = pygame.image.load('assets\player.png')
-    player = pygame.transform.rotozoom(player,0,0.2)
-    player_y = 325
+    score_text = font.render(f'Score: {score}',True,white,black)
+    screen.blit(score_text,(160,250))
+    floor = pygame.draw.rect(screen,white,[0,220,WIDTH,5])
+    player = pygame.draw.rect(screen,green,[player_x,player_y,20,20])
 
-    gravity = 1
-    jump = 0
-    jumpcount = 0
+    obstacle0 = pygame.draw.rect(screen,red,[obstacles[0],200,20,20])
+    obstacle1 = pygame.draw.rect(screen,yellow,[obstacles[1],200,20,20])
+    obstacle2 = pygame.draw.rect(screen,orange,[obstacles[2],200,20,20])
 
-    crate = pygame.image.load('assets\crate.png')
-    crate = pygame.transform.rotozoom(crate,0,0.8)
-    crate_x = 760
-    crate_speed = 2
 
-    #basic attacks
-    basicAttack_group = pygame.sprite.Group()
-    shoot = False
 
-    while True:
-        screen.blit(image,(bgx-640,0))
-        screen.blit(image,(bgx,0))
-        screen.blit(image,(bgx+640,0))
-        
-        bgx = bgx - 1
-        if bgx <= -640:
-            bgx = 0
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN and not active:
+            if event.key == pygame.K_SPACE:
+                obstacles = [300,450,600]
+                player_x = 50
+                score = 0
+                active = True
+        if event.type == pygame.KEYDOWN and active:
+            if event.key == pygame.K_SPACE and y_change == 0:
+                y_change = 18
+            if event.key == pygame.K_RIGHT:
+                x_change = 2
+            if event.key == pygame.K_LEFT:
+                x_change = -2
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_RIGHT:
+                x_change = 0
+            if event.key == pygame.K_LEFT:
+                x_change = 0
+            
+    for i in range(len(obstacles)):
+        if active:
+            obstacles[i] -= obstacle_speed
+            if obstacles[i] < -20:
+                obstacles[i] = random.randint(470,570)
+                score += 1
+            if player.colliderect(obstacle0) or  player.colliderect(obstacle1) or  player.colliderect(obstacle2):
+                active = False
 
-        p_rect = screen.blit(player,(50,player_y))
-        if player_y < 325:
-            player_y = player_y + gravity
-            #go back to the og tutorial and recheck this 
-        if jump == 1:
-            player_y = player_y - 4
-            jumpcount += 1
-            if jumpcount > 40:
-                jump = 0
-                jumpcount = 0    
-        c_rect = screen.blit(crate,(crate_x,360))
-        crate_x = crate_x - crate_speed
-        if crate_x < -50:
-            crate_x = random.randint(760,800)
-            crate_speed = random.randint(2,4)
 
-        if p_rect.colliderect(c_rect):
-            print('Collision')
-            return
 
-        jumping = False
 
-        basicAttack_group.update()
-        basicAttack_group.draw(screen)
+    if 0 <= player_x <= 430:
+        player_x += x_change
+    if player_x < 0:
+        player_x = 0
+    if player_x > 430:
+        player_x = 430   
 
-        pygame.display.update()
-        for event in pygame.event.get():
-           if event.type == pygame.QUIT:
-              print('Quitting')
-              pygame.display.quit()
-              exit()
-           if event.type == pygame.KEYDOWN:
-                #to fix jumping i will need to add a box and do a collision check
-                if event.key == pygame.K_SPACE:
-                     if jumping == False:
-                        jumping = True
-                        print('Jump')
-                        jump = 1
-                if event.key == pygame.K_q: #basic attack
-                    shoot = True
-                    if shoot == True:
-                      bullet = Projectile(50,player_y,0)
-                      basicAttack_group.add(bullet)
-           if event.type == pygame.KEYUP:
-                if event.key == pygame.K_q:
-                    shoot = False
-                if event.key == pygame.K_SPACE:
-                    jumping = False       
-def main():
-    menu()
 
-main()
+
+    if y_change > 0 or player_y < 200:
+        player_y -= y_change
+        y_change -= gravity
+    if player_y > 200:
+        player_y = 200
+    if player_y == 200 and y_change < 0:
+        y_change = 0
+
+
+    pygame.display.flip()
+pygame.quit()

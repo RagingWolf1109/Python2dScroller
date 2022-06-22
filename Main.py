@@ -98,7 +98,7 @@ while running:
         player_x = 0
     if player_x > 430:
         player_x = 430   
-        
+
 #Jumping
     if y_change > 0 or player_y < 200:
         player_y -= y_change
@@ -107,7 +107,6 @@ while running:
         player_y = 200
     if player_y == 200 and y_change < 0:
         y_change = 0
-
 
     pygame.display.flip()
 pygame.quit()
